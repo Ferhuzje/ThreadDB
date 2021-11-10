@@ -8,12 +8,20 @@ import java.util.Random;
 public class Datenbank {
 
     public void datenbankSchreiben() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Connection con = null;
+
+
+            }
+        }
         try {
             Connection con = DriverManager.getConnection("jdbc:mysql://localhost/thread_db", "root", "");
             con.setAutoCommit(false);
 
             Statement stat = con.createStatement();
-            
+
             //Random Passwort erzeugen mit 8 Zeichen 
             for(int i = 1; i < 100; i++) {
                 String passwort = "";
@@ -29,8 +37,20 @@ public class Datenbank {
             con.commit();
             con.close();
             
-        } catch (SQLException e) {
+        } catch (Exception e) {
+                try {
+                    con.rollback();
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
             e.printStackTrace();
+        }
+        finally {
+            try {
+                con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
