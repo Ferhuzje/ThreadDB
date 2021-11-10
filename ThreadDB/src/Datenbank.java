@@ -10,22 +10,23 @@ public class Datenbank {
     public void datenbankSchreiben() {
         try {
             Connection con = DriverManager.getConnection("jdbc:mysql://localhost/thread_db", "root", "");
-            Statement stat = con.createStatement();
+            con.setAutoCommit(false);
 
-            for(int i = 1; i < 1000; i++) {
+            Statement stat = con.createStatement();
+            
+            //Random Passwort erzeugen mit 8 Zeichen 
+            for(int i = 1; i < 100; i++) {
                 String passwort = "";
                 for(int j = 0; j < 8; j++) {
                     char c = (char)(new Random().nextInt(123-97) + 97);
                     passwort += c;
                     }
                 System.out.println(passwort);
-                //DB in DB schreiben
+                //in DB schreiben
                 stat.execute("CREATE TABLE IF NOT EXISTS daten(ID int, passwort varchar(255));");
-
-
-            
                 stat.execute("Insert INTO daten (passwort) VALUES('" + passwort + "');");
             }
+            con.commit();
             con.close();
             
         } catch (SQLException e) {
